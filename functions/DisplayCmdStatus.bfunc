@@ -1,0 +1,7 @@
+function DisplayCmdStatus() {
+  if command -v "$cmd" >/dev/null 2>&1; then
+        echo -e "    [\e[32mInstalled\e[0m] $cmd"
+    else
+        echo -e "    [\e[31mMissing\e[0m]   $cmd"
+    fi
+  }
