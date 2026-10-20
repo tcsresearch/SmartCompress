@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 function SanityChecker_ColorsFile() {
 # Check if the file exists and is a regular file
     if [ -f "$COLORS_FILE" ]; then
