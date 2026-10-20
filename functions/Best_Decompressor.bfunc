@@ -1,0 +1,92 @@
+#!/bin/env bash
+
+best_decompressor() {
+    local archive="$1"
+
+    if [[ ! -f "$archive" ]]; then
+        echo "Error: Archive file '$archive' does not exist or is not a regular file." >&2
+        return 1
+    fi
+
+    case "$archive" in
+        *.tar.xz)
+            if command -v pixz >/dev/null 2>&1; then
+                echo "Extracting tar.xz archive using parallel pixz..."
+                pixz -dc "$archive" | tar -xf -
+            elif command -v xz >/dev/null 2>&1; then
+                echo "Extracting tar.xz archive using xz..."
+                xz -dc "$archive" | tar -xf -
+            else
+                echo "Error: pixz or xz is required but neither is installed." >&2; return 1
+            fi ;;
+        *.xz)
+            if command -v pixz >/dev/null 2>&1; then
+                echo "Decompressing xz file using parallel pixz..."
+                pixz -d < "$archive" > "${archive%.xz}"
+            elif command -v xz >/dev/null 2>&1; then
+                echo "Decompressing xz file using xz..."
+                xz -d -k "$archive"
+            else
+                echo "Error: pixz or xz is required but neither is installed." >&2; return 1
+            fi ;;
+        *.tar.zst)
+            if ! command -v zstd >/dev/null 2>&1; then echo "Error: zstd is required but not installed." >&2; return 1; fi
+            echo "Extracting tar.zst archive using zstd..."
+            zstd -dc "$archive" | tar -xf - ;;
+        *.zst)
+            if ! command -v zstd >/dev/null 2>&1; then echo "Error: zstd is required but not installed." >&2; return 1; fi
+            echo "Decompressing zstd file..."
+            zstd -d "$archive" ;;
+        *.tar.lz4)
+            if ! command -v lz4 >/dev/null 2>&1; then echo "Error: lz4 is required but not installed." >&2; return 1; fi
+            echo "Extracting tar.lz4 archive using lz4..."
+            lz4 -dc "$archive" | tar -xf - ;;
+        *.lz4)
+            if ! command -v lz4 >/dev/null 2>&1; then echo "Error: lz4 is required but not installed." >&2; return 1; fi
+            echo "Decompressing lz4 file..."
+            lz4 -d "$archive" ;;
+        *.tar.bz2)
+            if command -v pbzip2 >/dev/null 2>&1; then
+                echo "Extracting tar.bz2 archive using parallel pbzip2..."
+                pbzip2 -dc "$archive" | tar -xf -
+            elif command -v bzip2 >/dev/null 2>&1; then
+                echo "Extracting tar.bz2 archive using bzip2..."
+                bzip2 -dc "$archive" | tar -xf -
+            else
+                echo "Error: pbzip2 or bzip2 is required but neither is installed." >&2; return 1
+            fi ;;
+        *.bz2)
+            if command -v pbzip2 >/dev/null 2>&1; then
+                echo "Decompressing bzip2 file using parallel pbzip2..."
+                pbzip2 -d -k "$archive"
+            elif command -v bzip2 >/dev/null 2>&1; then
+                echo "Decompressing bzip2 file using bzip2..."
+                bzip2 -d -k "$archive"
+            else
+                echo "Error: pbzip2 or bzip2 is required but neither is installed." >&2; return 1
+            fi ;;
+        *.tar.gz|*.tgz)
+            if command -v pigz >/dev/null 2>&1; then
+                echo "Extracting tar.gz archive using parallel pigz..."
+                pigz -dc "$archive" | tar -xf -
+            elif command -v gzip >/dev/null 2>&1; then
+                echo "Extracting tar.gz archive using gzip..."
+                gzip -dc "$archive" | tar -xf -
+            else
+                echo "Error: pigz or gzip is required but neither is installed." >&2; return 1;
+            fi ;;
+      *.gz)
+          if command -v pigz >/dev/null 2>&1; then
+              echo "Decompressing gzip file using parallel pigz..."
+              pigz -d -k "$archive"
+          elif command -v gzip >/dev/null 2>&1; then
+              echo "Decompressing gzip file using gzip..."
+              gzip -d -k "$archive"
+          else
+              echo "Error: pigz or gzip is required but neither is installed." >&2; return 1;
+              fi ;;
+    *)
+      echo "Error: Unsupported or unknown archive format for '$archive'." >&2
+      return 1 ;;
+  esac
+}
