@@ -1,9 +1,12 @@
+
+
+<img src="https://github.com/tcsresearch/SmartCompress/blob/main/SmartCompress_Logo.jpg">
+
 # SmartCompress
 Dynamically check system tools to compress or decompress files and directories based on explicit speed or size criteria.
 <br>
 This utility will be used by our <a href="https://github.com/tcsresearch/TarMonster-beta">TarMonster</a> project.
 <hr>
-
 <p>
 
 > [!NOTE]
