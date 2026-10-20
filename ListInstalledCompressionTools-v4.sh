@@ -17,7 +17,7 @@ Is_Missing="[\e[31mMissing\e[0m]"
 # Define Functions #                                                                                       #
 ############################################################################################################
 
-function SanityChecker() {
+function SanityChecker_ColorsFile() {
 # Check if the file exists and is a regular file
     if [ -f "$COLORS_FILE" ]; then
         echo "Sourcing '$COLORS_FILE': [OK]. "
@@ -30,7 +30,7 @@ function SanityChecker() {
 
 
 # Run SanityChecker #
-SanityChecker
+SanityChecker_ColorsFile
 
 
 function DisplayCmdStatus() {
