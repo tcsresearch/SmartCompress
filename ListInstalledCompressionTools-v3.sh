@@ -23,11 +23,11 @@ function SanityChecker() {
 
 
 echo " "
-echo "SmartCompress Diagnostic Utility"
-echo "--------------------------------"
+echo "${brightyellow} SmartCompress Diagnostic Utility ${reset} "
+echo "${brightyellow} -------------------------------- ${reset} "
 echo " "
 
-echo "  [CATEGORY]: Tar/Gzip"
+echo "  ${brightyellow} [CATEGORY]: ${brightwhite} Tar/Gzip ${reset} "
 echo "  --------------------------------"
 for cmd in tar gzip gunzip pigz; do
     if command -v "$cmd" >/dev/null 2>&1; then
@@ -39,7 +39,7 @@ done
 
 echo " "
 
-echo "  [CATEGORY]: Bzip"
+echo "  ${brightyellow} [CATEGORY]: ${brightwhite} Bzip ${reset} "
 echo "  --------------------------------"
 for cmd in bzip2 bunzip2 pbzip2; do
     if command -v "$cmd" >/dev/null 2>&1; then
@@ -51,7 +51,7 @@ done
 
 echo " "
 
-echo "  [CATEGORY]: xz/zip/7z"
+echo "  ${brightyellow} [CATEGORY]: ${brightwhite} xz/zip/7z ${reset} "
 echo "  --------------------------------"
 for cmd in xz unxz pixz zip unzip 7z; do
     if command -v "$cmd" >/dev/null 2>&1; then
@@ -63,7 +63,7 @@ done
 
 echo " "
 
-echo "  [CATEGORY]: rar/zstd/lz4"
+echo "  ${brightyellow} [CATEGORY]: ${brightwhite} rar/zstd/lz4 ${reset} "
 echo "  --------------------------------"
 for cmd in rar unrar zstd lz4; do
     if command -v "$cmd" >/dev/null 2>&1; then
