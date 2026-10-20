@@ -1,6 +1,7 @@
 #!/bin/env bash
 
 # shellcheck source=/dev/null
+# shellcheck disable=SC2034,SC2154
 
 ############################################################################################################
 # Define Files #                                                                                           #
