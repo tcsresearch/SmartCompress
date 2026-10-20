@@ -222,32 +222,40 @@ best_decompressor() {
 #######################################################################################################################
 
 main() {
-local action="compress"
-local mode="balanced"
-local target=""
+# Initialize variables.
+    local action="compress"
+    local mode="balanced"
+    local target=""
+
 # Parsing arguments natively supporting both long and short options
-while [[ $# -gt 0 ]]; do
-case "$1" in
--c|--compress)    action="compress"; shift ;;
--d|--decompress)  action="decompress"; shift ;;
--f|--fast|--speed) mode="speed"; shift ;;
--s|--size)        mode="size"; shift ;;
--h|--help)        show_help; exit 0 ;;
--*)               echo "Unknown option: $1" >&2; show_help; exit 1 ;;
-*)                target="$1"; shift ;;
-esac
-done
-if [[ -z "$target" ]]; then
-echo "Error: No target file or directory specified." >&2
-show_help
-exit 1
-fi
-if [[ "$action" == "compress" ]]; then
-best_compressor "$mode" "$target"
-elif [[ "$action" == "decompress" ]]; then
-best_decompressor "$target"
-fi
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -c|--compress)    action="compress"; shift ;;
+            -d|--decompress)  action="decompress"; shift ;;
+            -f|--fast|--speed) mode="speed"; shift ;;
+            -s|--size)        mode="size"; shift ;;
+            -h|--help)        show_help; exit 0 ;;
+            -*)               echo "Unknown option: $1" >&2; show_help; exit 1 ;;
+            *)                target="$1"; shift ;;
+        esac
+    done
+
+# Confirm a target file or directory has been specified.
+    if [[ -z "$target" ]]; then
+        echo "Error: No target file or directory specified." >&2
+        show_help
+        return 1 # changed from 'exit'
+    fi
+
+# Determine action (compress/decompress).
+    if [[ "$action" == "compress" ]]; then
+        best_compressor "$mode" "$target"
+    elif [[ "$action" == "decompress" ]]; then
+        best_decompressor "$target"
+    fi
 }
+
+### Run Main w/ Args ###
 main "$@"
 
 ### Notable Implementation Details:
