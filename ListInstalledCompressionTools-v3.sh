@@ -1,5 +1,27 @@
 #!/bin/env bash
 
+############################################################################################################
+# Define Files #                                                                                           #
+############################################################################################################
+
+COLORS_FILE="$(pwd)/conf/Colors2.conf"
+
+############################################################################################################
+# Define Functions #                                                                                       #
+############################################################################################################
+
+function SanityChecker() {
+# Check if the file exists and is a regular file
+    if [ -f "$COLORS_FILE" ]; then
+        echo "Sourcing '$COLORS_FILE': [OK]. "
+        source "$COLORS_FILE"
+    else
+        echo "ERROR: File '$COLORS_FILE' does not exist."
+        return 1
+    fi
+}
+
+
 echo " "
 echo "SmartCompress Diagnostic Utility"
 echo "--------------------------------"
