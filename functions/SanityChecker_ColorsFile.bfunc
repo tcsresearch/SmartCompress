@@ -1,0 +1,10 @@
+function SanityChecker_ColorsFile() {
+# Check if the file exists and is a regular file
+    if [ -f "$COLORS_FILE" ]; then
+        echo "Sourcing '$COLORS_FILE': [OK]. "
+        source "$COLORS_FILE"
+    else
+        echo "ERROR: File '$COLORS_FILE' does not exist."
+        return 1
+    fi
+}
