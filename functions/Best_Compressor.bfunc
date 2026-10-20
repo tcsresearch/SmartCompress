@@ -1,0 +1,98 @@
+#!/bin/env bash 
+
+best_compressor() {
+    local mode="$1"
+    local target="$2"
+
+    if [[ ! -e "$target" ]]; then
+        echo "Error: Target '$target' does not exist." >&2
+        return 1
+    fi
+
+    # Evaluation Layer: Identify target type
+    local is_dir=false
+    if [[ -d "$target" ]]; then
+        is_dir=true
+        target="${target%/}"
+    fi
+
+    case "$mode" in
+        "size")
+            # Size priority: pixz -> xz -> zstd -> pbzip2 -> bzip2 -> pigz -> gzip
+            if command -v pixz >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using parallel pixz (-9)..."
+                if $is_dir; then tar -cf - "$target" | pixz -9 > "${target}.tar.xz"; else pixz -9 < "$target" > "${target}.xz"; fi
+            elif command -v xz >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using xz (-9)..."
+                if $is_dir; then tar -cf - "$target" | xz -9 > "${target}.tar.xz"; else xz -9 -k "$target"; fi
+            elif command -v zstd >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using zstd (--ultra -22)..."
+                if $is_dir; then tar -cf - "$target" | zstd --ultra -22 > "${target}.tar.zst"; else zstd --ultra -22 "$target"; fi
+            elif command -v pbzip2 >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using parallel pbzip2 (-9)..."
+                if $is_dir; then tar -cf - "$target" | pbzip2 -9 > "${target}.tar.bz2"; else pbzip2 -9 -k "$target"; fi
+            elif command -v bzip2 >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using bzip2 (-9)..."
+                if $is_dir; then tar -cf - "$target" | bzip2 -9 > "${target}.tar.bz2"; else bzip2 -9 -k "$target"; fi
+            elif command -v pigz >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using parallel pigz (-9)..."
+                if $is_dir; then tar -cf - "$target" | pigz -9 > "${target}.tar.gz"; else pigz -9 -k "$target"; fi
+            elif command -v gzip >/dev/null 2>&1; then
+                echo "Optimizing for SIZE: Using gzip (-9)..."
+                if $is_dir; then tar -cf - "$target" | gzip -9 > "${target}.tar.gz"; else gzip -9 -k "$target"; fi
+            else
+                echo "Error: No compression utilities found on this system." >&2
+                return 1
+            fi
+            ;;
+
+        "speed")
+            # Speed priority: lz4 -> zstd -> pigz -> gzip
+            if command -v lz4 >/dev/null 2>&1; then
+                echo "Optimizing for SPEED: Using lz4..."
+                if $is_dir; then tar -cf - "$target" | lz4 - "${target}.tar.lz4"; else lz4 "$target" "${target}.lz4"; fi
+            elif command -v zstd >/dev/null 2>&1; then
+                echo "Optimizing for SPEED: Using zstd (-1)..."
+                if $is_dir; then tar -cf - "$target" | zstd -1 > "${target}.tar.zst"; else zstd -1 "$target"; fi
+            elif command -v pigz >/dev/null 2>&1; then
+                echo "Optimizing for SPEED: Using parallel pigz (-1)..."
+                if $is_dir; then tar -cf - "$target" | pigz -1 > "${target}.tar.gz"; else pigz -1 -k "$target"; fi
+            elif command -v gzip >/dev/null 2>&1; then
+                echo "Optimizing for SPEED: Using gzip (-1)..."
+                if $is_dir; then tar -cf - "$target" | gzip -1 > "${target}.tar.gz"; else gzip -1 -k "$target"; fi
+            else
+                echo "Error: No speed-optimized utilities found on this system." >&2
+                return 1
+            fi
+            ;;
+
+        "balanced")
+            # Balanced priority: zstd -> lz4 -> pixz -> xz -> pbzip2 -> bzip2 -> pigz -> gzip
+            if command -v zstd >/dev/null 2>&1; then
+                echo "Using balanced zstd (-3)..."
+                if $is_dir; then tar -cf - "$target" | zstd -3 > "${target}.tar.zst"; else zstd -3 "$target"; fi
+            elif command -v lz4 >/dev/null 2>&1; then
+                echo "Using balanced lz4..."
+                if $is_dir; then tar -cf - "$target" | lz4 - "${target}.tar.lz4"; else lz4 "$target" "${target}.lz4"; fi
+            elif command -v pixz >/dev/null 2>&1; then
+                echo "Using balanced parallel pixz..."
+                if $is_dir; then tar -cf - "$target" | pixz > "${target}.tar.xz"; else pixz < "$target" > "${target}.xz"; fi
+            elif command -v xz >/dev/null 2>&1; then
+                echo "Using balanced xz (-6)..."
+                if $is_dir; then tar -cf - "$target" | xz -6 > "${target}.tar.xz"; else xz -6 -k "$target"; fi
+            elif command -v pbzip2 >/dev/null 2>&1; then
+                echo "Using balanced parallel pbzip2..."
+                if $is_dir; then tar -cf - "$target" | pbzip2 > "${target}.tar.bz2"; else pbzip2 -k "$target"; fi
+            elif command -v bzip2 >/dev/null 2>&1; then
+                echo "Using balanced bzip2..."
+                if $is_dir; then tar -cf - "$target" | bzip2 > "${target}.tar.bz2"; else bzip2 -k "$target"; fi
+            elif command -v pigz >/dev/null 2>&1; then
+                echo "Using balanced parallel pigz..."
+                if $is_dir; then tar -cf - "$target" | pigz > "${target}.tar.gz"; else pigz -k "$target"; fi
+            else
+                echo "Using balanced gzip..."
+                if $is_dir; then tar -cf - "$target" | gzip > "${target}.tar.gz"; else gzip -k "$target"; fi
+            fi
+            ;;
+    esac
+}
