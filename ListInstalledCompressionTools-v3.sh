@@ -22,6 +22,11 @@ function SanityChecker() {
 }
 
 
+# Run SanityChecker #
+SanityChecker
+
+#########################################################################################################
+
 echo " "
 echo "${brightyellow} SmartCompress Diagnostic Utility ${reset} "
 echo "${brightyellow} -------------------------------- ${reset} "
