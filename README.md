@@ -12,7 +12,7 @@ This utility will be used by our <a href="https://github.com/tcsresearch/TarMons
   
 ### Project Status
 <!-- SHELLCHECK_COMPLIANCE_START -->
-**Shellcheck Date Of Compliance:** Pending execution
+**Shellcheck Date Of Compliance:** 2026-10-27
 <!-- SHELLCHECK_COMPLIANCE_END -->
 
 </p>
