@@ -7,7 +7,17 @@ Dynamically check system tools to compress or decompress files and directories b
 <br>
 This utility will be used by our <a href="https://github.com/tcsresearch/TarMonster-beta">TarMonster</a> project.
 <hr>
+
 <p>
+  
+### Project Status
+<!-- SHELLCHECK_COMPLIANCE_START -->
+**Shellcheck Date Of Compliance:** Pending execution
+<!-- SHELLCHECK_COMPLIANCE_END -->
+
+</p>
+
+<hr>
 
 > [!NOTE]
 > An experimental backup & restore script utilizing several compression/decompression methods.
