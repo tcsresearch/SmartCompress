@@ -1,0 +1,17 @@
+name: Call-Shared-Workflows
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-shared-workflow_ShellCheck_njs24-With-bfunc:
+    uses: tcsresearch/shared-workflows/.github/workflows/ShellCheck_njs24-With-bfunc.yml@main
+  call-shared-workflow_ShellCheck_njs24-bfuncOnly:
+    uses: tcsresearch/shared-workflows/.github/workflows/ShellCheck_njs24-bfuncOnly.yml@main
+  call-shared-workflow_ShellCheck_njs24:
+    uses: tcsresearch/shared-workflows/.github/workflows/ShellCheck_njs24.yml@main
+  call-shared-workflow_update-compliance-date:
+    uses: tcsresearch/shared-workflows/.github/workflows/update-compliance-date.yml@main
+     
