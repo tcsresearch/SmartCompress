@@ -7,11 +7,10 @@ on:
         description: 'Log level'
         required: true
         default: 'warning'
-        
-on:
   pull_request:
     branches:
       - main
+        
 
 jobs:
   call-shared-workflow_ShellCheck_njs24-With-bfunc:
