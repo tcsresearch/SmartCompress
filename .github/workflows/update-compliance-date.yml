@@ -14,15 +14,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v7
 
-      - name: Verify Both Workflows Passed
+            - name: Verify Both Workflows Passed
         uses: actions/github-script@v7
         id: status-check
         with:
           script: |
-            // Fetch the latest runs for both targeting workflows on the default branch
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const branch = context.payload.workflow_run.head_branch;
+            
+            // Safe fallback: use the workflow_run branch, or default to main/master if run manually
+            const branch = context.payload.workflow_run 
+              ? context.payload.workflow_run.head_branch 
+              : context.ref.replace('refs/heads/', '');
+
+            console.log(`Checking status for branch: ${branch}`);
 
             const run1 = await github.rest.actions.listWorkflowRuns({
               owner, repo, workflow_id: 'ShellCheck_njs24.yml', branch, per_page: 1
@@ -31,8 +36,9 @@ jobs:
               owner, repo, workflow_id: 'ShellCheck_njs24-bfuncOnly.yml', branch, per_page: 1
             });
 
-            const status1 = run1.data.workflow_runs[0]?.conclusion;
-            const status2 = run2.data.workflow_runs[0]?.conclusion;
+            // Safely fetch conclusions, defaulting to 'failed' if no runs exist yet
+            const status1 = run1.data.workflow_runs?.[0]?.conclusion || 'no_runs_found';
+            const status2 = run2.data.workflow_runs?.[0]?.conclusion || 'no_runs_found';
 
             console.log(`ShellCheck_njs24 conclusion: ${status1}`);
             console.log(`ShellCheck_njs24-bfuncOnly conclusion: ${status2}`);
