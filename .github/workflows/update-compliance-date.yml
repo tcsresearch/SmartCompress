@@ -5,6 +5,7 @@ on:
     workflows: ["ShellCheck_njs24", "ShellCheck .bfunc files"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   check-and-update:
