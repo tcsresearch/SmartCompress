@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v7
 
-            - name: Verify Both Workflows Passed
+      - name: Verify Both Workflows Passed
         uses: actions/github-script@v7
         id: status-check
         with:
